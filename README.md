@@ -15,7 +15,7 @@ Then I used the Grunt task-runner to:
 
 In order to run Grunt for this application on your local machine, you will need to download all the project files. Once you have done this you will need to locally install Grunt and the above-mentioned tasks within the application's root folder. 
 
-For instructions on installing Grunt, click [here] (visit http://gruntjs.com/getting-started)
+For instructions on installing Grunt, head to http://gruntjs.com/getting-started
 
 Also, a quick google search for each of the respective tasks eg: grunt-responsive-images, grunt-imagemin etc. will provide easy access to instructions on how to install each of these.
 
