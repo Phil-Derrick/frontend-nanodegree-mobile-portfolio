@@ -27,19 +27,33 @@ When Completed, just type "Grunt" from the root folder and an optimized/producti
 
 Removed variables with constant values from the original for loop within the changePizzaSizes function.
 
-Used getElementsByClassName to rechieve elements, rather than querySelector.
+Used "document.getElementsByClassName" & "document.getElementById" to rechieve elements, rather than "document.querySelector".
 
-### 60fps while scrolling - - optimizations to main.js
+### 60fps while scrolling - - optimizations to main.js / style.css
 
-First reduced the number of sliding pizzas generated when the page loads from 200 to 20.
+Added the "backface-visibility: hidden" property to the .mover class.
 
-Then made the following alterations to the updatePositions function:
+Moved the declaration of the pizzasDiv variable to outside of the for loop that creates and appends the pizzas when the page loads.
 
-Used getElementsByClassName rather than querySelectorAll to retrieve collection of elements.
+<b>Made the following alterations to the updatePositions function:</b>
 
-Moved expensive phase calculations outside of the original for loop and into a new for loop which pushes the resulting calculations into an array. This array is then called upon from within the original for loop.
+Used "document.getElementsByClassName" rather than "document.querySelectorAll" to retrieve collection of elements.
+
+Included phase variable in the for loop conditions to prevent it from being created every time the loop is executed. Declared the itemsLen variable outside of the for loop conditions.
 
 Replaced style.left / basicleft with style.transform / translateX & translateZ(0) to reduce the triggering of layout.
+
+<b>Made these changes to the fucntion that appends the sliding pizzas to the page:</b>
+
+Reduced the number of sliding pizzas generated when the page loads from 200 to 24.
+
+Declared the movingPizzas variable outside of the for loop to reduce the DOM calls.
+
+Replaced the line "elem.basicLeft = (i % cols) * s;" with "elem.style.left = (i % cols) * s + 'px';" due to use of transform: TranslateX.
+
+
+
+
 
 
 

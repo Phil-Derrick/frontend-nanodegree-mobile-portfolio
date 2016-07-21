@@ -1,3 +1,4 @@
+
 /*
 Welcome to the 60fps project! Your goal is to make Cam's Pizzeria website run
 jank-free at 60 frames per second.
@@ -15,6 +16,8 @@ Creator:
 Cameron Pittman, Udacity Course Developer
 cameron *at* udacity *dot* com
 */
+
+"use strict";
 
 // As you may have realized, this website randomly generates pizzas.
 // Here are arrays of all possible pizza ingredients.
@@ -404,15 +407,16 @@ var resizePizzas = function(size) {
 
   // Changes the value for the size of the pizza above the slider
   function changeSliderLabel(size) {
+  // Changed from document.querySelector to document.getElementById
     switch(size) {
       case "1":
-        document.querySelector("#pizzaSize").innerHTML = "Small";
+        document.getElementById("pizzaSize").innerHTML = "Small";
         return;
       case "2":
-        document.querySelector("#pizzaSize").innerHTML = "Medium";
+        document.getElementById("pizzaSize").innerHTML = "Medium";
         return;
       case "3":
-        document.querySelector("#pizzaSize").innerHTML = "Large";
+        document.getElementById("pizzaSize").innerHTML = "Large";
         return;
       default:
         console.log("bug in changeSliderLabel");
@@ -421,10 +425,11 @@ var resizePizzas = function(size) {
 
   changeSliderLabel(size);
 
-   // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
+  // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
   function determineDx (elem, size) {
+    // Changed from document.querySelector to document.getElementById
     var oldWidth = elem.offsetWidth;
-    var windowWidth = document.querySelector("#randomPizzas").offsetWidth;
+    var windowWidth = document.getElementById("randomPizzas").offsetWidth;
     var oldSize = oldWidth / windowWidth;
 
     // Changes the slider value to a percent width
@@ -454,10 +459,12 @@ var resizePizzas = function(size) {
     // The dx and newwidth variables use the properties of the "pizza0" element within randomPizzas,
     // as the applicable properties of each element within randomPizzas is always the same.
     var randomPizzas = document.getElementsByClassName("randomPizzaContainer");
+    var randomPizzasLen = randomPizzas.length
     var randomPizzaElem = document.getElementById("pizza0");
     var dx = determineDx(randomPizzaElem, size);
     var newwidth = (randomPizzaElem.offsetWidth + dx) + "px";
-    for (var i = 0; i < randomPizzas.length; i++) {
+
+    for (var i = 0; i < randomPizzasLen; i++) {
         randomPizzas[i].style.width = newwidth;
       }
     }
@@ -474,8 +481,9 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
+// Moved this declaration of the pizzasDiv variable to outside of the for loop.
+var pizzasDiv = document.getElementById("randomPizzas");
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -514,24 +522,17 @@ function updatePositions() {
 
   // This top variable is separated out of the loop that generates the 5 values, as its value
   // doesn't change at all during execution of the updatePositions function.
-  var top = document.body.scrollTop;
-
-  var constArray = [];
-  var i;
-
-// A separate loop to generate the same 5 values that were always repeating in the
-// original loop, and add them to the constArray variable.
-  for (i = 0; i < 5; i++) {
-      constArray.push(Math.sin((top / 1250) + i));
-    }
+  var top = document.body.scrollTop / 1250;
 
 // Altered the loop to update the transform/translateX style instead of basicleft. Also included
-// translateZ(0) per Cam and Paul's video lesson on managing layers. Changed phase to multiply by
-// 500 instead of 100, as with 100 the pizza's were only covering a small portion of the viewport.
-  for (i = 0; i < items.length; i++) {
-    var phase = constArray[i % 5];
+// translateZ(0) per Cam and Paul's video lesson on managing layers. Included phase in the for loop
+// conditions to prevent it from being created every time the loop is executed.
+// Declared the itemsLen variable outside of the for loop conditions.
+  var itemsLen = items.length
+  for (var i = 0, len = itemsLen, phase; i < len; i++) {
+    phase = Math.sin(top + i % 5);
     items[i].style.transform = "translateZ(0)"
-    items[i].style.transform = 'translateX(' + (500 * phase) + 'px)';
+    items[i].style.transform = 'translateX(' + 100 * phase + 'px)';
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -551,15 +552,22 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 20; i++) {
+  //declared variable movingPizzas outside of the for loop to reduce DOM calls.
+  var movingPizzas = document.getElementById('movingPizzas1');
+  //changed number of pizzas to 24, a multiple of the number of cols. Declared the elem variable
+  //in the initialisation of the for loop preventing it from being created each time the loop is
+  //executed.
+  for (var i = 0, elem; i < 24; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "../img/pizza.png";
     elem.style.height = "100px";
     elem.style.width = "73.333px";
-    elem.basicLeft = (i % cols) * s;
+    //replaced the line "elem.basicLeft = (i % cols) * s;" with this due to use of TranslateX.
+    elem.style.left = (i % cols) * s + 'px';
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.querySelector("#movingPizzas1").appendChild(elem);
+    //changed this line to call on the movingPizzas variable created outside the for loop.
+    movingPizzas.appendChild(elem);
   }
   updatePositions();
 });
